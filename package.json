@@ -1,0 +1,28 @@
+{
+  "name": "claude-mcp-platform",
+  "version": "1.0.0",
+  "description": "MCP Platform Orchestrator for managing and routing requests across MCP servers",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "bun run --watch src/index.ts",
+    "build": "tsc",
+    "start": "bun run src/index.ts",
+    "lint": "eslint src/",
+    "test": "bun test",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "orchestrator",
+    "platform"
+  ],
+  "author": "kogunlowo123",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.0",
+    "eslint": "^8.56.0"
+  }
+}
