@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture - claude-mcp-platform</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0c0b;color:#f5f2eb;font-family:'SF Mono','Fira Code','Cascadia Code',Consolas,monospace;line-height:1.6;padding:0}
+a{color:#c8420a;text-decoration:none}a:hover{text-decoration:underline}
+.container{max-width:1200px;margin:0 auto;padding:2rem}
+h1{font-size:2rem;color:#f5f2eb;margin-bottom:0.5rem}
+h2{font-size:1.4rem;color:#c8420a;margin:2rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid #222}
+h3{font-size:1.1rem;color:#f5f2eb;margin:1.5rem 0 0.75rem}
+.badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:4px;font-size:0.8rem;font-weight:600;margin-right:0.5rem;margin-bottom:0.5rem}
+.badge-lang{background:#1a3a1a;color:#4ade80;border:1px solid #2d5a2d}
+.badge-cat{background:#1a1a3a;color:#60a5fa;border:1px solid #2d2d5a}
+.badge-ver{background:#3a1a1a;color:#f87171;border:1px solid #5a2d2d}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin:1rem 0}
+.card{background:#141514;border:1px solid #222;border-radius:8px;padding:1.25rem;text-align:center}
+.card-value{font-size:1.5rem;color:#c8420a;font-weight:700}
+.card-label{font-size:0.8rem;color:#888;margin-top:0.25rem}
+.arch-diagram{background:#101210;border:1px solid #222;border-radius:8px;padding:2rem;margin:1rem 0;overflow-x:auto}
+.flow-row{display:flex;justify-content:center;align-items:center;gap:0.5rem;margin:0.75rem 0;flex-wrap:wrap}
+.flow-box{background:#1a1a2e;border:2px solid #c8420a;border-radius:6px;padding:0.5rem 1rem;font-size:0.8rem;text-align:center;min-width:120px;color:#f5f2eb}
+.flow-box.accent{background:#c8420a;color:#fff;border-color:#e8520a}
+.flow-box.blue{border-color:#1982c4;background:#0f1f3a}
+.flow-box.green{border-color:#2b9348;background:#0f2a1a}
+.flow-box.purple{border-color:#533483;background:#1a0f2e}
+.flow-box.orange{border-color:#e36414;background:#2a1a0a}
+.flow-arrow{color:#c8420a;font-size:1.2rem;font-weight:bold}
+.flow-arrow-down{display:flex;justify-content:center;color:#c8420a;font-size:1.2rem;font-weight:bold}
+.flow-label{font-size:0.7rem;color:#888;display:block}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:0.85rem}
+th{background:#1a1a1a;color:#c8420a;padding:0.75rem;text-align:left;border-bottom:2px solid #333;white-space:nowrap}
+td{padding:0.75rem;border-bottom:1px solid #1a1a1a}
+tr:hover{background:#141514}
+code{background:#1a1a1a;padding:0.15rem 0.4rem;border-radius:3px;font-size:0.85rem;color:#e8a060}
+.checklist{list-style:none;padding:0}
+.checklist li{padding:0.4rem 0;padding-left:1.5rem;position:relative}
+.checklist li::before{content:'[ ]';position:absolute;left:0;color:#c8420a;font-weight:bold}
+.section-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.section-box{background:#141514;border:1px solid #222;border-radius:8px;padding:1.25rem}
+.section-box h3{margin-top:0}
+footer{margin-top:3rem;padding:1.5rem 0;border-top:1px solid #222;text-align:center;font-size:0.75rem;color:#555}
+.env-table td:first-child{color:#4ade80}
+.header-bar{background:#141514;border-bottom:1px solid #222;padding:1.5rem 0}
+.header-bar .container{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.industry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.industry-card{background:#141514;border:1px solid #222;border-radius:8px;padding:1rem}
+.industry-card h4{color:#c8420a;margin-bottom:0.5rem;font-size:0.95rem}
+.industry-card p{font-size:0.8rem;color:#aaa}
+</style>
+</head>
+<body>
+
+<div class="header-bar">
+<div class="container">
+<div>
+<h1>claude-mcp-platform</h1>
+<p style="color:#888;margin-top:0.25rem">MCP Platform Orchestrator for managing, routing, and monitoring requests across MCP servers</p>
+</div>
+<div>
+<span class="badge badge-lang">TypeScript</span>
+<span class="badge badge-cat">API/Service</span>
+<span class="badge badge-ver">v1.0.0</span>
+</div>
+</div>
+</div>
+
+<div class="container">
+
+<h2>Executive Summary</h2>
+<p>A Model Context Protocol (MCP) platform orchestrator that manages, routes, and monitors requests across multiple MCP servers. It provides a server registry with capability-based discovery, pattern-based request routing with priority rules and round-robin fallback, periodic health checking with automatic server status management, and metrics collection for request counts, latency, and server availability. Built with TypeScript and Bun runtime, with Docker and docker-compose support for production deployment.</p>
+
+<h2>Overview</h2>
+<div class="cards">
+<div class="card"><div class="card-value">TypeScript</div><div class="card-label">Language</div></div>
+<div class="card"><div class="card-value">API/Service</div><div class="card-label">Category</div></div>
+<div class="card"><div class="card-value">0</div><div class="card-label">Runtime Dependencies</div></div>
+<div class="card"><div class="card-value">6</div><div class="card-label">Source Modules</div></div>
+<div class="card"><div class="card-value">5</div><div class="card-label">API Endpoints</div></div>
+<div class="card"><div class="card-value">MIT</div><div class="card-label">License</div></div>
+</div>
+
+<h2>Architecture Diagram</h2>
+<div class="arch-diagram">
+<div class="flow-row">
+<div class="flow-box blue">Client Request</div>
+</div>
+<div class="flow-arrow-down">v</div>
+<div class="flow-row">
+<div class="flow-box accent">MCP Platform<br><span class="flow-label">Orchestrator Core</span></div>
+</div>
+<div class="flow-arrow-down">v</div>
+<div class="flow-row">
+<div class="flow-box orange">Request Router<br><span class="flow-label">Route Resolution</span></div>
+<div class="flow-box blue">Server Registry<br><span class="flow-label">Register / Discover</span></div>
+<div class="flow-box green">Health Checker<br><span class="flow-label">Periodic Monitoring</span></div>
+<div class="flow-box purple">Metrics Endpoint<br><span class="flow-label">Stats / Latency</span></div>
+</div>
+<div class="flow-arrow-down">v</div>
+<div class="flow-row">
+<div class="flow-box accent">Direct Match</div>
+<div class="flow-box orange">Pattern Match<br><span class="flow-label">Rule-Based Routing</span></div>
+<div class="flow-box blue">Round-Robin<br><span class="flow-label">Fallback Selection</span></div>
+</div>
+<div class="flow-arrow-down">v</div>
+<div class="flow-row">
+<div class="flow-box green">Target MCP Server</div>
+<div class="flow-box green">Target MCP Server</div>
+<div class="flow-box green">Target MCP Server</div>
+</div>
+<div class="flow-label" style="text-align:center">Registered MCP Server Pool</div>
+</div>
+
+<h2>Component Breakdown</h2>
+<table>
+<thead><tr><th>Component</th><th>File</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td>Entry Point</td><td><code>src/index.ts</code></td><td>HTTP server setup, API endpoint registration, platform initialization</td></tr>
+<tr><td>Types</td><td><code>src/types.ts</code></td><td>TypeScript interfaces for servers, routes, health status, metrics</td></tr>
+<tr><td>Configuration</td><td><code>src/config.ts</code></td><td>Environment-based configuration (port, host, intervals, timeouts)</td></tr>
+<tr><td>Server Registry</td><td><code>src/registry.ts</code></td><td>Register/deregister servers, capability-based lookup and discovery</td></tr>
+<tr><td>Request Router</td><td><code>src/router.ts</code></td><td>Pattern-based routing with priority rules, direct match, and round-robin fallback</td></tr>
+<tr><td>Health Checker</td><td><code>src/health.ts</code></td><td>Periodic health checks, status management (healthy/degraded/unhealthy)</td></tr>
+</tbody>
+</table>
+
+<h2>Data Flow / Request Flow</h2>
+<div class="section-box">
+<ol style="padding-left:1.5rem;color:#ccc">
+<li><strong>Server Registration</strong> -- MCP servers register via POST /servers with their URL, capabilities, and metadata. The registry stores them in the active pool.</li>
+<li><strong>Health Monitoring</strong> -- The health checker polls registered servers at a configurable interval (default 30s). Unhealthy servers are removed from routing.</li>
+<li><strong>Request Routing</strong> -- Incoming requests to POST /route are resolved via: (1) direct match by server name, (2) pattern match against routing rules with priority, (3) round-robin across healthy servers.</li>
+<li><strong>Metrics Collection</strong> -- Each routed request increments counters and records latency. GET /metrics exposes request stats, latency percentiles, and server status.</li>
+<li><strong>Platform Health</strong> -- GET /health returns overall platform status including registered server count, healthy count, and uptime.</li>
+</ol>
+</div>
+
+<h2>Security Controls</h2>
+<table>
+<thead><tr><th>Control</th><th>Implementation</th></tr></thead>
+<tbody>
+<tr><td>Health Gating</td><td>Unhealthy servers are automatically removed from routing pool</td></tr>
+<tr><td>Request Timeout</td><td>Configurable request timeout (default 10s) prevents hung connections</td></tr>
+<tr><td>Retry Logic</td><td>Configurable max retries (default 3) with automatic failover</td></tr>
+<tr><td>Network Isolation</td><td>Docker network isolation for inter-service communication</td></tr>
+<tr><td>Input Validation</td><td>Request parameters validated before routing</td></tr>
+</tbody>
+</table>
+
+<h2>Industry Adaptation</h2>
+<div class="industry-grid">
+<div class="industry-card"><h4>Healthcare</h4><p>Route patient data queries to HIPAA-compliant MCP servers. Health monitoring ensures clinical system availability SLAs.</p></div>
+<div class="industry-card"><h4>Finance</h4><p>Priority-based routing for latency-sensitive trading queries. Metrics tracking for SLA compliance and audit trails.</p></div>
+<div class="industry-card"><h4>Government</h4><p>Route classified vs. unclassified requests to appropriate security-cleared MCP server pools. FedRAMP boundary enforcement.</p></div>
+<div class="industry-card"><h4>Retail</h4><p>Round-robin load balancing across regional MCP servers for localized product data. Auto-failover during peak traffic.</p></div>
+<div class="industry-card"><h4>SaaS</h4><p>Multi-tenant routing by capability. Per-tenant metrics and usage tracking. Horizontal scaling of MCP server pools.</p></div>
+</div>
+
+<h2>Production Readiness Checklist</h2>
+<ul class="checklist">
+<li>Configure MCP_PORT, MCP_HOST for production network</li>
+<li>Set appropriate MCP_HEALTH_INTERVAL for server monitoring</li>
+<li>Configure MCP_REQUEST_TIMEOUT based on expected latencies</li>
+<li>Register all MCP servers with correct capabilities</li>
+<li>Set up routing rules with appropriate priorities</li>
+<li>Deploy via docker-compose for production</li>
+<li>Configure reverse proxy (nginx/Caddy) with TLS termination</li>
+<li>Set up external monitoring for /health endpoint</li>
+<li>Configure log aggregation for request/routing logs</li>
+<li>Set up alerting on /metrics for anomalous latency or error rates</li>
+</ul>
+
+<h2>Configuration / Environment Variables</h2>
+<table class="env-table">
+<thead><tr><th>Variable</th><th>Default</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>MCP_PORT</code></td><td>3000</td><td>Server port</td></tr>
+<tr><td><code>MCP_HOST</code></td><td>0.0.0.0</td><td>Server host</td></tr>
+<tr><td><code>MCP_LOG_LEVEL</code></td><td>info</td><td>Log level</td></tr>
+<tr><td><code>MCP_HEALTH_INTERVAL</code></td><td>30000</td><td>Health check interval (ms)</td></tr>
+<tr><td><code>MCP_REQUEST_TIMEOUT</code></td><td>10000</td><td>Request timeout (ms)</td></tr>
+<tr><td><code>MCP_MAX_RETRIES</code></td><td>3</td><td>Max retry attempts</td></tr>
+</tbody>
+</table>
+
+<h2>Deployment</h2>
+<div class="section-grid">
+<div class="section-box">
+<h3>Using Bun</h3>
+<pre><code>bun install
+bun run dev     # development
+bun run start   # production</code></pre>
+</div>
+<div class="section-box">
+<h3>Using Docker</h3>
+<pre><code>docker-compose up -d
+
+# Or build manually:
+docker build -t claude-mcp-platform .
+docker run -p 3000:3000 claude-mcp-platform</code></pre>
+</div>
+</div>
+
+<h2>Links</h2>
+<table>
+<tbody>
+<tr><td>Repository</td><td><a href="https://github.com/your-org/claude-mcp-platform">github.com/your-org/claude-mcp-platform</a></td></tr>
+<tr><td>README</td><td><a href="../README.md">README.md</a></td></tr>
+<tr><td>Changelog</td><td><a href="../CHANGELOG.md">CHANGELOG.md</a></td></tr>
+<tr><td>License</td><td><a href="../LICENSE">MIT License</a></td></tr>
+</tbody>
+</table>
+
+<footer>
+Generated on 2026-03-15 | claude-mcp-platform v1.0.0 | Architecture Documentation
+</footer>
+
+</div>
+</body>
+</html>
