@@ -1,3 +1,7 @@
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue?logo=typescript&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green)
+![GitHub release](https://img.shields.io/github/v/release/kogunlowo123/claude-mcp-platform)
+
 # claude-mcp-platform
 
 MCP (Model Context Protocol) Platform Orchestrator for managing, routing, and monitoring requests across multiple MCP servers.
