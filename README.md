@@ -69,11 +69,23 @@ bun install
 bun run dev
 ```
 
-### Using Docker
+### Using Docker (Production)
 
 ```bash
 docker-compose up -d
 ```
+
+### Using Docker (Development)
+
+```bash
+# Create your local env file from the template
+cp .env.example .env.dev
+
+# Start with hot-reload
+docker-compose -f docker-compose.dev.yml up --build
+```
+
+Source code is volume-mounted so changes to `src/` are picked up automatically via `bun run --watch`. A named volume is used for `node_modules` to avoid host overwrites.
 
 ## API Endpoints
 
